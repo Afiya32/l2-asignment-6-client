@@ -10,79 +10,101 @@ import { useRouter } from 'next/navigation';
 const Register = () => {
     const [isSignup, setIsSignup] = useState(false);
     const { saveUserData } = useAuth(); // Assuming your useAuth has this function to save user data
-  const router=useRouter()
+    const router = useRouter();
+
     const toggleAuthMode = () => {
         setIsSignup(!isSignup);
     };
 
-    const handleSignup = async (event:any) => {
-        event.preventDefault();
-  const form = event.target;
-  const name = form.name.value;
-  const email = form.email.value;
-  const password = form.password.value;
-  const address = form.address.value;
-  const phone = form.phone.value;
-  const photoUrl = form.photoUrl.value;
-
-  try {
-    const response = await axios.post('https://gardening-platform-backend.vercel.app/api/users/signup', {
-      name,
-      email,
-      password,
-      address,
-      phone,
-      photoUrl,
-      role: 'user',
-    });
-
-    const { user, token } = response.data.data;
+    const handleSignup = async (event: any) => {
+      event.preventDefault();
+      const form = event.target;
+      const name = form.name.value;
+      const email = form.email.value;
+      const password = form.password.value;
+      const address = form.address.value;
+      const phone = form.phone.value;
+      const photoUrl = form.photoUrl.value;
     
-    saveUserData(user, token); // Save user and token
-    router.push('/');
-    Swal.fire({
-      icon: 'success',
-      title: 'Signed Up Successfully!',
-      text: 'Welcome aboard!',
-    });
-  } catch (error: any) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: error.response?.data?.message || 'Something went wrong!',
-    });
-  }
-};
-
-    const handleLogin = async (event:any) => {
-        event.preventDefault();
-        const form = event.target;
-        const email = form.email.value;
-        const password = form.password.value;
-      
-        try {
-          const response = await axios.post('https://gardening-platform-backend.vercel.app/api/users/login', {
-            email,
-            password,
+      try {
+        const response = await axios.post('https://gardening-platform-backend.vercel.app/api/users/signup', {
+          name,
+          email,
+          password,
+          address,
+          phone,
+          photoUrl,
+          role: 'user',
+        });
+    
+        // Log the response to verify the data received
+        console.log('Signup Response:', response.data);
+    
+        const user  = response.data.data; // We assume that the token is not available in the response
+    
+        if (user) {
+          // Save the user data in localStorage even without a token
+          saveUserData(user);
+          router.push('/');
+          Swal.fire({
+            icon: 'success',
+            title: 'Signed Up Successfully!',
+            text: 'Welcome aboard!',
           });
-      
-          const { user, token } = response.data.data;
-      
-          saveUserData(user, token); // Save user and token
+        } else {
+          console.error('Signup failed: User missing in response');
+        }
+    
+      } catch (error: any) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.response?.data?.message || 'Something went wrong!',
+        });
+        console.error('Signup error:', error);
+      }
+    };
+
+    const handleLogin = async (event: any) => {
+      event.preventDefault();
+      const form = event.target;
+      const email = form.email.value;
+      const password = form.password.value;
+    
+      try {
+        const response = await axios.post('https://gardening-platform-backend.vercel.app/api/users/login', {
+          email,
+          password,
+        });
+    
+        // Log the response to verify the data received
+        console.log('Login Response:', response.data);
+    
+        const { user } = response.data.data; // Again, assume token is missing
+    
+        if (user) {
+          // Save the user data in localStorage without the token
+          saveUserData(user);
           router.push('/');
           Swal.fire({
             icon: 'success',
             title: 'Logged In Successfully!',
             text: 'Welcome back!',
           });
-        } catch (error: any) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: error.response?.data?.message || 'Invalid credentials!',
-          });
+        } else {
+          console.error('Login failed: User missing in response');
         }
-      };
+    
+      } catch (error: any) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.response?.data?.message || 'Invalid credentials!',
+        });
+        console.error('Login error:', error);
+      }
+    };
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-stone-300">
             <div className="bg-white p-8 rounded-lg shadow-lg w-96">

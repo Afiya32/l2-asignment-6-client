@@ -5,8 +5,8 @@ import Link from "next/link";
 import logo from "@/assets/logo.png"
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-  const pathname = usePathname();
+const UserLayout = ({ children }: { children: React.ReactNode }) => {
+    const pathname = usePathname();
   const isActive = (path: string): boolean => {
     return pathname === path;
   };
@@ -37,7 +37,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         </div>
       </div>
       {/* large device */}
-      <div className="hidden lg:flex lg:justify-start lg:items-start lg:gap-2 ">
+      <div className="hidden lg:flex lg:justify-start lg:items-center lg:gap-2 ">
       <div className="bg-green-300 h-[100vh] w-2/12"> 
       <div className="grid grid-cols-1 items-center justify-center gap-2 bg-green-300">
          <div>
@@ -53,12 +53,12 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
             </h1>
             <h1>
 
-            <Link href="/admin-dashboard"
-             className={isActive("/admin-dashboard") ? "font-bold text-blue-500" : "font-bold"}>Dashboard</Link>
+            <Link href="/user-dashboard"
+             className={isActive("/user-dashboard") ? "font-bold text-blue-500" : "font-bold"}>Dashboard</Link>
             </h1>
             <h1>
 
-            <Link href="/admin-dashboard/users"
+            <Link href="/admin/users"
              className={isActive("/admin/users") ? "font-bold text-blue-500" : "font-bold"}>Users</Link>
             </h1>
 
@@ -70,4 +70,4 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default AdminLayout;
+export default UserLayout;

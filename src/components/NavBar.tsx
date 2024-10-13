@@ -12,7 +12,7 @@ const NavBar: FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const { user, logout } = useAuth(); // Ensure user and logout are defined in your useAuth hook
-
+  console.log(user)
   const isActive = (path: string): boolean => {
     return pathname === path;
   };
@@ -100,10 +100,10 @@ const NavBar: FC = () => {
               </li>
               <li className="dropdown dropdown-end">
                 <div tabIndex={0} role="button" className="btn m-1 rounded-full">
-                  {user?.photoUrl ? (
+                  {user?.name ? (
                     <div className="avatar online">
                       <div className="w-10 rounded-full">
-                        <Image alt="user avatar" src={user?.photoUrl} width={8} height={8} />
+                        <Image alt="user avatar" src={user?.photoUrl|| logo} width={8} height={8} />
                       </div>
                     </div>
                   ) : (
@@ -114,7 +114,7 @@ const NavBar: FC = () => {
                   tabIndex={0}
                   className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
                 >
-                  {user?.email ? (
+                  {user?.name ? (
                     <>
                       {user.role === 'admin' ? (
         <Link href="/admin-dashboard" className="font-bold text-center m-2">
@@ -133,7 +133,7 @@ const NavBar: FC = () => {
       </button>
                     </>
                   ) : (
-                    <Link href="/register" className="font-bold">
+                    <Link href="/register" className="font-bold text-center">
                       Sign up
                     </Link>
                   )}
@@ -181,12 +181,12 @@ const NavBar: FC = () => {
               role="button"
               className="btn m-1 rounded-full"
             >
-              {user?.photoUrl ? (
+              {user?.name ? (
                 <div className="avatar online">
                   <div className="w-10 rounded-full">
                     <Image
                       alt="user avatar"
-                      src={user?.photoUrl}
+                      src={user?.photoUrl||logo}
                       width={8}
                       height={8}
                     />
@@ -200,7 +200,7 @@ const NavBar: FC = () => {
               tabIndex={0}
               className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
             >
-              {user?.email ? (
+              {user?.name ? (
                 <>
                   {user.role === 'admin' ? (
         <Link href="/admin-dashboard" className="font-bold text-center m-2">
