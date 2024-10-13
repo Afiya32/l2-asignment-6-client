@@ -58,8 +58,8 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
             </h1>
             <h1>
 
-            <Link href="/admin/users"
-             className={isActive("/admin/users") ? "font-bold text-blue-500" : "font-bold"}>Users</Link>
+            <Link href="/user-dashboard/post"
+             className={isActive("/user-dashboard/post") ? "font-bold text-blue-500" : "font-bold"}>create post</Link>
             </h1>
 
           </div>

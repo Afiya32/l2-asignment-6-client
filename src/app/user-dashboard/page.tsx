@@ -1,12 +1,14 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../hooks/useAuth';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { useAuth } from '../hooks/useAuth';
+import { User } from '../types/types'; // Correctly import the User type
+
 const Page = () => {
   const { user, saveUserData } = useAuth(); // Get user info from the custom hook
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
-  const [updatedUser, setUpdatedUser] = useState(user); // Local state for form fields
+  const [updatedUser, setUpdatedUser] = useState<User | null>(user); // Use imported User type
 
   // Handle opening and closing the modal
   const toggleModal = () => {
@@ -15,41 +17,53 @@ const Page = () => {
 
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUpdatedUser({ ...updatedUser, [e.target.name]: e.target.value });
+    if (updatedUser) {
+      setUpdatedUser({
+        ...updatedUser,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   // Handle form submission for updating the user profile
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      // Send updated user info to backend
-      const response = await axios.put(`https://your-backend-url.com/api/users/${user._id}`, updatedUser);
+    if (updatedUser) {
+      try {
+        // Send updated user info to backend
+        const response = await axios.put(`https://your-backend-url.com/api/users/${updatedUser._id}`, updatedUser);
 
-      // Log response to verify the update
-      console.log('Update Response:', response.data);
+        // Log response to verify the update
+        console.log('Update Response:', response.data);
 
-      // Update user info in local storage if successful
-      if (response.data.user) {
-        saveUserData(response.data.user); // Save updated user info in local storage
+        // Update user info in local storage if successful
+        if (response.data.user) {
+          saveUserData(response.data.user); // Save updated user info in local storage
+          Swal.fire({
+            icon: 'success',
+            title: 'Profile Updated',
+            text: 'Your profile has been updated successfully!',
+          });
+          toggleModal(); // Close the modal
+        } else {
+          console.error('Update failed');
+        }
+      } catch (error) {
+        console.error('Update error:', error);
         Swal.fire({
-          icon: 'success',
-          title: 'Profile Updated',
-          text: 'Your profile has been updated successfully!',
+          icon: 'error',
+          title: 'Update Failed',
+          text: 'Something went wrong while updating your profile!',
         });
-        toggleModal(); // Close the modal
-      } else {
-        console.error('Update failed');
       }
-    } catch (error) {
-      console.error('Update error:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Update Failed',
-        text: 'Something went wrong while updating your profile!',
-      });
     }
   };
+
+  // Ensure user info is loaded correctly
+  useEffect(() => {
+    setUpdatedUser(user);
+  }, [user]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -58,7 +72,7 @@ const Page = () => {
         <div className="mb-6">
           <p><strong>Name:</strong> {user?.name}</p>
           <p><strong>Email:</strong> {user?.email}</p>
-          <p><strong>Address:</strong> {user?.address}</p>
+          <p><strong>Address:</strong> {user?.address ?? 'Not Provided'}</p>
           <p><strong>Phone:</strong> {user?.phone}</p>
           <p><strong>Photo:</strong> <img src={user?.photoUrl} alt="User Photo" className="w-16 h-16 rounded-full" /></p>
         </div>
@@ -85,7 +99,7 @@ const Page = () => {
                   <input
                     name="name"
                     type="text"
-                    value={updatedUser?.name}
+                    value={updatedUser?.name || ''}
                     onChange={handleInputChange}
                     className="input input-bordered w-full"
                   />
@@ -95,7 +109,7 @@ const Page = () => {
                   <input
                     name="email"
                     type="email"
-                    value={updatedUser?.email}
+                    value={updatedUser?.email || ''}
                     onChange={handleInputChange}
                     className="input input-bordered w-full"
                   />
@@ -105,7 +119,7 @@ const Page = () => {
                   <input
                     name="address"
                     type="text"
-                    value={updatedUser?.address}
+                    value={updatedUser?.address || ''}
                     onChange={handleInputChange}
                     className="input input-bordered w-full"
                   />
@@ -115,7 +129,7 @@ const Page = () => {
                   <input
                     name="phone"
                     type="text"
-                    value={updatedUser?.phone}
+                    value={updatedUser?.phone || ''}
                     onChange={handleInputChange}
                     className="input input-bordered w-full"
                   />
@@ -125,7 +139,7 @@ const Page = () => {
                   <input
                     name="photoUrl"
                     type="text"
-                    value={updatedUser?.photoUrl}
+                    value={updatedUser?.photoUrl || ''}
                     onChange={handleInputChange}
                     className="input input-bordered w-full"
                   />
@@ -133,7 +147,14 @@ const Page = () => {
 
                 <button type="submit" className="btn btn-success w-full">Save Changes</button>
               </form>
-              <button className="btn btn-danger mt-4" onClick={toggleModal}>Cancel</button>
+
+              {/* Cancel Button to Close Modal */}
+              <button
+                className="btn btn-danger mt-4 w-full"
+                onClick={toggleModal}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         )}

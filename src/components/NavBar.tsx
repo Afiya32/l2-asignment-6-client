@@ -91,12 +91,23 @@ const NavBar: FC = () => {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/rooms"
-                  className={isActive("/rooms") ? "font-bold text-blue-500" : "font-bold"}
+               {
+                user?.name?(
+                  <Link
+                  href="/posts"
+                  className={isActive("/posts") ? "font-bold text-blue-500" : "font-bold"}
                 >
                   posts
                 </Link>
+                ):(
+                  <div>
+                    <p>
+                      
+                    </p>
+
+                  </div>
+                )
+               }
               </li>
               <li className="dropdown dropdown-end">
                 <div tabIndex={0} role="button" className="btn m-1 rounded-full">
