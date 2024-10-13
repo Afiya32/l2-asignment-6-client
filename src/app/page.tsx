@@ -1,14 +1,19 @@
+
+import Footer from "@/components/Footer";
+import Homepage from "@/components/Homepage";
 import NavBar from "@/components/NavBar";
-import Image from "next/image";
+
+
 
 export default function Home() {
   return (
     <div>
-      <NavBar/>
-      <main>
+    <NavBar/>
+      <main className="">
 
-      this is home page
+      <Homepage/>
       </main>
+    <Footer/>
     </div>
   );
 }

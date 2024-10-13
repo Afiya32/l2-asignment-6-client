@@ -9,6 +9,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backdropBlur: {
+        md: "12px",  // Example value, adjust if needed
+      },
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',

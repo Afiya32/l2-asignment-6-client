@@ -12,14 +12,14 @@ const NavBar: FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const { user, logout } = useAuth(); // Ensure user and logout are defined in your useAuth hook
-   console.log(user)
+
   const isActive = (path: string): boolean => {
     return pathname === path;
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 450);
+      setIsScrolled(window.scrollY > 150); // Change the scroll position if necessary
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -29,14 +29,12 @@ const NavBar: FC = () => {
   }, []);
 
   return (
-    <div className="drawer">
+    <div className="drawer sticky top-0 z-50">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
         <div
           className={`navbar sticky top-0 z-50 w-full transition-all duration-300 ease-in-out ${
-            isScrolled
-              ? "bg-transparent backdrop-blur-md"
-              : "bg-green-200 shadow-md"
+            isScrolled ? "bg-transparent backdrop-blur-md " : "bg-green-200 shadow-md"
           }`}
         >
           <div className="flex-none lg:hidden">
@@ -64,7 +62,7 @@ const NavBar: FC = () => {
             <Image alt="logo" src={logo} width={75} height={75} />
           </div>
           <div className="mx-2 flex-1 px-2 text-xl font-bold text-white">
-            Green World {user?.name}
+            Green World 
           </div>
           <div className="hidden flex-none lg:block">
             <ul className="menu menu-horizontal">
@@ -97,24 +95,19 @@ const NavBar: FC = () => {
                   href="/rooms"
                   className={isActive("/rooms") ? "font-bold text-blue-500" : "font-bold"}
                 >
-                  Meeting Rooms
+                  posts
                 </Link>
               </li>
               <li className="dropdown dropdown-end">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="btn m-1 rounded-full"
-                >
-                  {user?.email ? (
-                    <Image
-                      alt="user avatar"
-                      src={user?.photoUrl}
-                      width={75}
-                      height={75}
-                    />
+                <div tabIndex={0} role="button" className="btn m-1 rounded-full">
+                  {user?.photoUrl ? (
+                    <div className="avatar online">
+                      <div className="w-10 rounded-full">
+                        <Image alt="user avatar" src={user?.photoUrl} width={8} height={8} />
+                      </div>
+                    </div>
                   ) : (
-                    <FaPerson />
+                    <FaPerson className="h-8 w-8" />
                   )}
                 </div>
                 <ul
@@ -123,15 +116,21 @@ const NavBar: FC = () => {
                 >
                   {user?.email ? (
                     <>
-                      <Link href="/user-dashboard" className="font-bold">
-                        Dashboard
-                      </Link>
-                      <button
-                        className="btn btn-error mt-2 btn-outline"
-                        onClick={logout}
-                      >
-                        Log out
-                      </button>
+                      {user.role === 'admin' ? (
+        <Link href="/admin-dashboard" className="font-bold text-center m-2">
+          Admin Dashboard
+        </Link>
+      ) : (
+        <Link href="/user-dashboard" className="font-bold text-center m-2">
+          User Dashboard
+        </Link>
+      )}
+      <button
+        className="btn btn-error mt-2 btn-outline"
+        onClick={logout}
+      >
+        Log out
+      </button>
                     </>
                   ) : (
                     <Link href="/register" className="font-bold">
@@ -182,15 +181,19 @@ const NavBar: FC = () => {
               role="button"
               className="btn m-1 rounded-full"
             >
-              {user?.email ? (
-                <Image
-                  alt="user avatar"
-                  src={user?.photoUrl }
-                  width={75}
-                  height={75}
-                />
+              {user?.photoUrl ? (
+                <div className="avatar online">
+                  <div className="w-10 rounded-full">
+                    <Image
+                      alt="user avatar"
+                      src={user?.photoUrl}
+                      width={8}
+                      height={8}
+                    />
+                  </div>
+                </div>
               ) : (
-                <FaPerson />
+                <FaPerson className="h-8 w-8" />
               )}
             </div>
             <ul
@@ -199,15 +202,21 @@ const NavBar: FC = () => {
             >
               {user?.email ? (
                 <>
-                  <Link href="/user-dashboard" className="font-bold">
-                    Dashboard
-                  </Link>
-                  <button
-                    className="btn btn-error mt-2 btn-outline"
-                    onClick={logout}
-                  >
-                    Log out
-                  </button>
+                  {user.role === 'admin' ? (
+        <Link href="/admin-dashboard" className="font-bold text-center m-2">
+          Admin Dashboard
+        </Link>
+      ) : (
+        <Link href="/user-dashboard" className="font-bold text-center m-2">
+          User Dashboard
+        </Link>
+      )}
+      <button
+        className="btn btn-error mt-2 btn-outline"
+        onClick={logout}
+      >
+        Log out
+      </button>
                 </>
               ) : (
                 <Link href="/register" className="font-bold">

@@ -17,77 +17,72 @@ const Register = () => {
 
     const handleSignup = async (event:any) => {
         event.preventDefault();
-        const form = event.target;
-        const name = form.name.value;
-        const email = form.email.value;
-        const password = form.password.value;
-        const address = form.address.value;
-        const phone = form.phone.value;
-        const photoUrl = form.photoUrl.value;
+  const form = event.target;
+  const name = form.name.value;
+  const email = form.email.value;
+  const password = form.password.value;
+  const address = form.address.value;
+  const phone = form.phone.value;
+  const photoUrl = form.photoUrl.value;
 
-        try {
-            // Sending request to the backend with role: 'user'
-            const response = await axios.post('https://gardening-platform-backend.vercel.app/api/users/signup', {
-                name,
-                email,
-                password,
-                address,
-                phone,
-                photoUrl,
-                role: 'user' // Including role as 'user'
-            });
+  try {
+    const response = await axios.post('https://gardening-platform-backend.vercel.app/api/users/signup', {
+      name,
+      email,
+      password,
+      address,
+      phone,
+      photoUrl,
+      role: 'user',
+    });
 
-            // Save user info to cookies/localStorage
-            saveUserData(response.data.data);
-            router.push('/');
-            // Show success alert
-            Swal.fire({
-                icon: 'success',
-                title: 'Signed Up Successfully!',
-                text: 'Welcome aboard!',
-            });
-           
-        } catch (error:any) {
-            // Show error alert
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: error.response?.data?.message || 'Something went wrong!',
-            });
-        }
-    };
+    const { user, token } = response.data.data;
+    
+    saveUserData(user, token); // Save user and token
+    router.push('/');
+    Swal.fire({
+      icon: 'success',
+      title: 'Signed Up Successfully!',
+      text: 'Welcome aboard!',
+    });
+  } catch (error: any) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.response?.data?.message || 'Something went wrong!',
+    });
+  }
+};
 
     const handleLogin = async (event:any) => {
         event.preventDefault();
         const form = event.target;
         const email = form.email.value;
         const password = form.password.value;
-
+      
         try {
-            const response = await axios.post('https://gardening-platform-backend.vercel.app/api/users/login', {
-                email,
-                password,
-            });
-
-            // Save user info to cookies/localStorage
-            saveUserData(response.data.data);
-            router.push('/');
-            // Show success alert
-            Swal.fire({
-                icon: 'success',
-                title: 'Logged In Successfully!',
-                text: 'Welcome back!',
-            });
-            router.push('/');
-        } catch (error:any) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: error.response?.data?.message || 'Invalid credentials!',
-            });
+          const response = await axios.post('https://gardening-platform-backend.vercel.app/api/users/login', {
+            email,
+            password,
+          });
+      
+          const { user, token } = response.data.data;
+      
+          saveUserData(user, token); // Save user and token
+          router.push('/');
+          Swal.fire({
+            icon: 'success',
+            title: 'Logged In Successfully!',
+            text: 'Welcome back!',
+          });
+        } catch (error: any) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.response?.data?.message || 'Invalid credentials!',
+          });
         }
-    };
-
+      };
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-stone-300">
             <div className="bg-white p-8 rounded-lg shadow-lg w-96">
